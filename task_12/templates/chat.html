@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    <ul id="messages"></ul>
+    <input id="message" autocomplete="off"><button onclick="sendMessage()">Send</button>
+
+    <script>
+        var socket = io();
+
+        socket.on('message', function(msg){
+            var li = document.createElement("li");
+            li.textContent = msg;
+            document.getElementById("messages").appendChild(li);
+        });
+
+        function sendMessage() {
+            var msg = document.getElementById("message").value;
+            socket.send(msg);
+            document.getElementById("message").value = '';
+        }
+    </script>
+
+    <button onclick="socket.emit('increment')">+1</button>
+<h2>Counter: <span id="counter">0</span></h2>
+
+<script>
+    socket.on('update', function(count) {
+        document.getElementById("counter").textContent = count;
+    });
+</script>
+
+</body>
+</html>

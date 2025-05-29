@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Chat</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h2>Flask Chat with Notifications</h2>
+
+    <input id="message" placeholder="Type your message here">
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="triggerNotification()">Notify All</button>
+
+    <ul id="chat"></ul>
+    <p id="notif" style="color: green; font-weight: bold;"></p>
+
+    <script>
+        const socket = io();
+
+        socket.on('message', function(msg) {
+            const item = document.createElement('li');
+            item.textContent = "💬 " + msg;
+            document.getElementById('chat').appendChild(item);
+        });
+
+        socket.on('notification', function(msg) {
+            const notif = document.getElementById('notif');
+            notif.textContent = msg;
+            setTimeout(() => notif.textContent = '', 4000);
+        });
+
+        function sendMessage() {
+            const msg = document.getElementById('message').value;
+            if (msg.trim()) {
+                socket.send(msg);
+                document.getElementById('message').value = '';
+            }
+        }
+
+        function triggerNotification() {
+            socket.emit('new_event');
+        }
+    </script>
+</body>
+</html>
